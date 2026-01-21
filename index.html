@@ -1,1454 +1,617 @@
-import React, { useState } from 'react';
-import { 
-  BookOpen, 
-  Brain, 
-  GraduationCap, 
-  Layout, 
-  PenTool, 
-  ChevronRight, 
-  Menu, 
-  X,
-  Lightbulb,
-  Target,
-  ArrowRight,
-  Layers,
-  MousePointerClick,
-  RefreshCcw,
-  Play,
-  Info,
-  ArrowLeft,
-  CheckCircle2,
-  FileText,
-  Briefcase,
-  Microscope,
-  ListOrdered
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Architect's Blueprint: English Education Strategy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Chosen Palette: Warm Stone & Earth - A minimalistic, academic, and calm palette using Stone neutrals with Amber and Slate accents. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9; /* Stone-50 */
+            color: #44403c; /* Stone-700 */
+        }
+        
+        h1, h2, h3, h4, .serif {
+            font-family: 'Merriweather', serif;
+        }
 
-/**
- * --- DATA STRUCTURES ---
- * Comprehensive curriculum data extracted from "English Education Program Learning Strategies.pdf"
- * UPDATED: Now includes 'whyItWorks' and 'actionSteps' for deeper detail.
- */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
 
-const generalToolkit = [
-  {
-    title: "The SQ3R Method",
-    subtitle: "For Module (BMP) Mastery",
-    description: "Given that the Buku Materi Pokok (BMP) is the primary source of examination material at UT, the SQ3R method is the gold standard for engagement. It transforms reading from a passive activity into an active interrogation of the text.",
-    steps: [
-      { name: "Survey (10%)", desc: "Before reading, scan the Title, Introduction, Headings, and Summary. This builds a mental 'skeleton' that you will flesh out later." },
-      { name: "Question (10%)", desc: "Turn every bold heading into a question. If the heading is 'Principles of Assessment', ask 'What are the principles?' This primes your brain to hunt for answers." },
-      { name: "Read (30%)", desc: "Read the section actively to find the answer to your specific question. Do not skim; read for precise understanding." },
-      { name: "Recite (20%)", desc: "Look away from the text. Recite the answer to your question aloud or write it in the margin. If you can't say it, you didn't learn it." },
-      { name: "Review (30%)", desc: "Weekly revision. Review your questions and see if you can still answer them. This moves info from short-term to long-term memory." }
-    ],
-    visualType: "sq3r"
-  },
-  {
-    title: "Visual Knowledge Construction",
-    subtitle: "Combating Cognitive Overload",
-    description: "Distance learners often suffer from cognitive overload due to the sheer volume of text in the BMPs. Transforming linear text into non-linear diagrams exploits Dual-Coding Theory, which suggests that combining verbal and visual information enhances retention.",
-    steps: [
-      { name: "Concept Maps", desc: "Use for Theory. Place the main concept in the center and link sub-concepts with labeled arrows (e.g., 'Causes', 'Leads to') to show relationships." },
-      { name: "Flowcharts", desc: "Use for Processes. Visualize sequences, such as the 'Evolution of Teaching Methods' or the 'Steps in writing a Lesson Plan'." },
-      { name: "Syntax Trees", desc: "Use for Grammar. Hierarchical visualization of sentence structures is the only way to truly understand syntax." }
-    ],
-    visualType: "none"
-  }
-];
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
 
-const semesters = [
-  {
-    id: 1,
-    title: "Semester 1: Foundations of Language",
-    description: "Establishing rigorous habits for language skill acquisition and grounding in national character.",
-    courses: [
-      {
-        code: "SPBI4102",
-        name: "Intensive Reading",
-        credits: 3,
-        category: "Language Skills (Core)",
-        examType: "Written Test",
-        scope: "Intensive Reading differs fundamentally from reading for pleasure. It is a disciplined, close examination of text to extract precise meaning, rhetorical structure, and lexical nuance. The course transitions students from 'learning to read' to 'reading to learn', involving bottom-up processing (decoding words) and top-down processing (using background knowledge).",
-        strategies: [
-          { 
-            title: "Lexical Decomposition Strategy", 
-            desc: "Students often hit a 'vocabulary wall'. Instead of breaking flow to use a dictionary, use morphological analysis.",
-            actionSteps: [
-              "Identify the unknown word (e.g., 'Unpredictability').",
-              "Strip the suffix (-ity = noun state).",
-              "Strip the prefix (Un- = not).",
-              "Isolate the root (Predict).",
-              "Deduce meaning: 'The state of not being able to predict'."
-            ],
-            whyItWorks: "This builds morphological awareness, allowing you to decode thousands of words without a dictionary."
-          },
-          { 
-            title: "The Paragraph Anatomy Method", 
-            desc: "Treat paragraphs as architectural structures rather than lists of sentences.",
-            actionSteps: [
-              "Highlight the Topic Sentence (The Roof).",
-              "Underline Supporting Details (The Pillars/Walls).",
-              "Circle the Concluding Sentence (The Foundation)."
-            ],
-            whyItWorks: "It visualizes the hierarchy of ideas, preventing you from getting lost in minor details."
-          },
-          { 
-            title: "Visual: Text Mining Map", 
-            desc: "A diagram to visualize the hierarchical structure of a reading passage.",
-            actionSteps: [
-              "Draw a central box labeled 'Thesis Statement'.",
-              "Radiate branches for each body paragraph.",
-              "Use Color Coding: Blue for verifiable facts, Red for author's opinion."
-            ],
-            whyItWorks: "The visual distinction (Blue/Red) is crucial for Critical Reading later on."
-          }
-        ],
-        visualId: "textMining"
-      },
-      {
-        code: "SPBI4103",
-        name: "Basic Composition",
-        credits: 3,
-        category: "Language Skills",
-        scope: "Lays the grammatical and structural foundation for academic writing. Moves beyond sentence construction to the paragraph level. Key concepts include mechanics (punctuation), sentence variety (simple, compound, complex), and paragraph unity.",
-        strategies: [
-          { 
-            title: "Sentence Combining Drills", 
-            desc: "A common failure point is 'choppy' writing. This drill builds syntactic maturity.",
-            actionSteps: [
-              "Take three short sentences: 'The boy ran. It was raining. He fell.'",
-              "Combine them into one complex sentence: 'Because it was raining, the boy ran and fell.'",
-              "Focus on using subordinating conjunctions (although, because, while)."
-            ] 
-          },
-          { 
-            title: "The 'Burger' Structure", 
-            desc: "A metaphor for paragraph unity.",
-            actionSteps: [
-              "Top Bun: Topic Sentence (introduces main idea).",
-              "Lettuce/Meat: Supporting sentences (data, quotes, examples).",
-              "Bottom Bun: Concluding sentence (restates idea)."
-            ],
-            whyItWorks: "Ensures you don't serve a 'messy burger' (a paragraph without structure)."
-          }
-        ],
-        visualId: "burger"
-      },
-      {
-        code: "SPBI4104",
-        name: "Verb Patterns in Texts",
-        credits: 4,
-        category: "Linguistics/Grammar",
-        scope: "Creates the syntactic skeleton for English proficiency. Focuses on the predicate: transitivity, complementation (gerunds vs infinitives), and tense-aspect systems. Analyzing *why* specific patterns are used in authentic texts.",
-        strategies: [
-          { 
-            title: "Corpus-Based Learning", 
-            desc: "Dictionary definitions are insufficient for patterns. You need real data.",
-            actionSteps: [
-              "Use an online corpus (like COCA or BNC).",
-              "Search for a verb (e.g., 'suggest').",
-              "Observe that it is followed by 'that + clause' or 'gerund', but never 'infinitive'."
-            ],
-            whyItWorks: "It provides inductive proof of grammar rules, which is more memorable than memorizing rules."
-          },
-          { 
-            title: "Pattern Substitution Tables", 
-            desc: "A visual grid to master sentence slots.",
-            actionSteps: [
-              "Create columns: Subject | Verb | Object | Complement.",
-              "Fit sentences into this grid to visualize structural slots."
-            ] 
-          }
-        ],
-        visualId: "syntaxTree"
-      },
-      {
-        code: "SPBI4101",
-        name: "Listening for General Purposes",
-        credits: 2,
-        category: "Language Skills",
-        scope: "Targets 'survival English' and social maintenance. Understanding greetings, instructions, and recounts. Focuses on Listening for Gist vs. Listening for Detail.",
-        strategies: [
-          { 
-            title: "Shadowing Technique", 
-            desc: "Trains the ear to process speed and intonation, not just vocabulary.",
-            actionSteps: [
-              "Play an audio track.",
-              "Repeat what you hear simultaneously, with a 0.5-second delay.",
-              "Do not pause the audio. Force your mouth to keep up with your ears."
-            ] 
-          },
-          { 
-            title: "The 3-Pass Listening", 
-            desc: "Never listen just once.",
-            actionSteps: [
-              "Pass 1 (Gist): Listen for the main idea only (Who/Where/What).",
-              "Pass 2 (Detail): Listen for specific numbers, dates, or names.",
-              "Pass 3 (Review): Listen with the transcript to catch 'blind spots'."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "MKWN4110",
-        name: "Pancasila",
-        credits: 2,
-        category: "General Education",
-        scope: "Philosophical foundation of the state. History, ideology, and ethical application.",
-        strategies: [
-          { title: "Comparative Matrix", desc: "Create a table comparing Pancasila values with ideologies like Liberalism and Socialism to understand the 'middle path'." }
-        ]
-      },
-      {
-        code: "MKWN4101",
-        name: "Pendidikan Agama Islam",
-        credits: 3,
-        category: "General Education",
-        scope: "Strengthening faith, Sharia law, and Islamic ethics (Akhlaq).",
-        strategies: [
-          { title: "Concept Mapping of Ethics", desc: "Connect theological concepts (like Amanah) to professional teaching ethics." }
-        ]
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: "Semester 2: Linguistic Systems",
-    description: "The scientific study of language (Linguistics) and critical skill elevation.",
-    courses: [
-      {
-        code: "SPBI4107",
-        name: "Introduction to Linguistics",
-        credits: 2,
-        category: "Linguistics",
-        scope: "Gateway to scientific analysis. Phonology (sounds), Morphology (word structure), Syntax (sentence rules), Semantics (meaning), Pragmatics (context). Contrasts Structuralism vs. Generative Grammar.",
-        strategies: [
-          { 
-            title: "Data Analysis Practice", 
-            desc: "Linguistics is a skill, not just content.",
-            actionSteps: [
-              "Phonology: Find 'minimal pairs' (e.g., 'pat' vs 'bat') to prove phoneme status.",
-              "Syntax: Draw trees for ambiguous sentences.",
-              "Morphology: Isolate morphemes in complex words."
-            ]
-          },
-          { 
-            title: "The 'Layer Cake' Model", 
-            desc: "Visualize language as vertical layers.",
-            actionSteps: [
-              "Bottom Layer: Sounds (Phonology).",
-              "Middle Layer: Words & Sentences (Morphology/Syntax).",
-              "Top Layer: Meaning & Context (Semantics/Pragmatics)."
-            ],
-            whyItWorks: "Helps you categorize new concepts into the correct 'layer' of the system."
-          }
-        ],
-        visualId: "vocalTract"
-      },
-      {
-        code: "SPBI4110",
-        name: "Clause Complexes in Texts",
-        credits: 3,
-        category: "Linguistics",
-        scope: "Grounded in Systemic Functional Linguistics (SFL). Analyzes links between clauses: Taxis (Parataxis vs Hypotaxis) and Logico-Semantic Relations (Expansion vs Projection).",
-        strategies: [
-          { 
-            title: "Clause Boundary Analysis", 
-            desc: "The first step in SFL analysis.",
-            actionSteps: [
-              "Take a text and use double slashes (//) to visually mark where one clause ends and another begins.",
-              "Circle the conjunctions at the boundaries."
-            ] 
-          },
-          { 
-            title: "Visual: SFL Taxis Grid", 
-            desc: "A matrix to map logical flow.",
-            actionSteps: [
-              "Create a table with Rows (Clause Complexes) and Columns (Paratactic/Hypotactic).",
-              "Place clauses in the correct column.",
-              "This visualizes if a text is simple (additive) or complex (subordinate)."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4109",
-        name: "Intensive Listening",
-        credits: 3,
-        category: "Language Skills",
-        scope: "Longer, cognitively demanding texts: lectures, interviews, news. Identifying stance and distinguishing fact from opinion.",
-        strategies: [
-          { 
-            title: "Cornell Note-Taking", 
-            desc: "Forces active processing during transient listening events.",
-            actionSteps: [
-              "Divide page into two columns (30/70 split).",
-              "Right Side: Take notes while listening.",
-              "Left Side: Write keywords/questions *after* listening.",
-              "Bottom: Write a 2-sentence summary."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4106",
-        name: "Critical Reading",
-        credits: 3,
-        category: "Language Skills",
-        scope: "Moves beyond comprehension to evaluation. Identifying bias, tone, logical fallacies, and author purpose.",
-        strategies: [
-          { 
-            title: "The 'Interrogation' Technique", 
-            desc: "Treat the text like a suspect, not a teacher.",
-            actionSteps: [
-              "Ask: Who wrote this?",
-              "Ask: Who pays them?",
-              "Ask: What evidence is missing?",
-              "Ask: Who benefits if I believe this?"
-            ] 
-          },
-          { 
-            title: "Visual: The Bias Scale", 
-            desc: "Visualizing hidden bias.",
-            actionSteps: [
-              "Draw a line with 'Neutral' in the center.",
-              "Extract adjectives from the text.",
-              "Plot them towards 'Positive' or 'Negative'.",
-              "A cluster on one side visually proves bias."
-            ]
-          }
-        ],
-        visualId: "biasScale"
-      },
-      {
-        code: "SPBI4105",
-        name: "Speaking for General Comm.",
-        credits: 2,
-        category: "Language Skills",
-        scope: "Transactional (getting things done) and Interactional (socializing) functions.",
-        strategies: [
-          { title: "Role-Play Recording", desc: "Script a scenario, record it, and self-assess fluency/grammar." }
-        ]
-      },
-      {
-        code: "SPBI4108",
-        name: "Introduction to Literature",
-        credits: 2,
-        category: "Literature",
-        scope: "Survey of Prose, Poetry, Drama. Elements: Plot, Setting, Theme.",
-        strategies: [
-          { title: "Freytag's Pyramid", desc: "Map stories: Exposition -> Rising Action -> Climax -> Falling Action -> Resolution." }
-        ]
-      },
-      {
-        code: "MKWN4109",
-        name: "Pendidikan Kewarganegaraan",
-        credits: 2,
-        category: "General Ed",
-        scope: "Citizenship, human rights, democracy, geopolitics.",
-        strategies: [
-          { title: "Current Events Linkage", desc: "Connect theory (Democracy) to current election news." }
-        ]
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: "Semester 3: Pedagogy & Psychology",
-    description: "Pivoting from 'learner' to 'teacher'. Psychological and methodological frameworks.",
-    courses: [
-      {
-        code: "SPIK4002",
-        name: "Perkembangan Peserta Didik",
-        credits: 2,
-        category: "Education",
-        scope: "Developmental psychology. Piaget (Cognitive stages), Vygotsky (ZPD, Scaffolding), Erikson (Psychosocial). Tailoring teaching to age.",
-        strategies: [
-          { 
-            title: "Case Study Application", 
-            desc: "Apply abstract theories to concrete examples.",
-            actionSteps: [
-              "Create a fictional student profile (e.g., 'A 12-year-old having trouble with abstract algebra').",
-              "Apply Piaget's theory: Explain that they are likely still in the 'Concrete Operational' stage and need physical manipulatives."
-            ]
-          },
-          { 
-            title: "Visual: ZPD Target", 
-            desc: "Visualizing Vygotsky's Zone of Proximal Development.",
-            actionSteps: [
-              "Inner Circle: 'What learner can do alone' (Boredom).",
-              "Middle Ring: 'What learner can do with help' (The ZPD - Learning happens here).",
-              "Outer Ring: 'What learner cannot do yet' (Frustration).",
-              "Visualize instruction as targeting the Middle Ring."
-            ] 
-          }
-        ],
-        visualId: "zpd"
-      },
-      {
-        code: "SPBI4201",
-        name: "Language Teaching Strategies",
-        credits: 4,
-        category: "Education",
-        scope: "The 'How' of teaching. Cooperative Learning (Jigsaw), PBL, Differentiation (Visual/Auditory/Kinesthetic), Classroom Management.",
-        strategies: [
-          { 
-            title: "The Strategy Toolbox", 
-            desc: "Build a personal reference guide.",
-            actionSteps: [
-              "Create a digital notebook.",
-              "For every strategy (e.g., Jigsaw, Think-Pair-Share), record:",
-              "1. Procedure (Step-by-step instructions)",
-              "2. Best For (e.g., Reading comprehension)",
-              "3. Potential Pitfalls (e.g., One student dominating)"
-            ] 
-          },
-          { 
-            title: "Micro-Simulation", 
-            desc: "Instruction-giving is a distinct skill.",
-            actionSteps: [
-              "Script exactly what you would say to students to set up a Jigsaw activity.",
-              "Read it aloud to check for clarity and brevity."
-            ] 
-          }
-        ],
-        visualId: "jigsaw"
-      },
-      {
-        code: "SPBI4203",
-        name: "Essay Writing",
-        credits: 3,
-        category: "Skills",
-        scope: "Transition to 5-paragraph essays. Thesis statements, hooks, topic sentences. Genres: Narrative, Descriptive, Expository, Argumentative.",
-        strategies: [
-          { 
-            title: "Reverse Outlining", 
-            desc: "Deconstruct good writing to learn structure.",
-            actionSteps: [
-              "Find a high-quality academic essay.",
-              "Read it and write the outline backwards.",
-              "Extract the Thesis Statement and every Topic Sentence.",
-              "This reveals the skeletal structure."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4205",
-        name: "Structural Revision",
-        credits: 4,
-        category: "Linguistics",
-        scope: "Advanced grammatical manipulation. Passive voice, Reported Speech (backshifting), Conditionals, Relative Clauses.",
-        strategies: [
-          { 
-            title: "Transformation Drills", 
-            desc: "Develop flexibility in sentence construction.",
-            actionSteps: [
-              "Take a base sentence: 'The teacher gave the student a book.'",
-              "Transform to Passive: 'The student was given a book.'",
-              "Transform to Relative: 'The student who was given a book...'",
-              "Transform to Question: 'Did the teacher give...?'"
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4204",
-        name: "Contextual Speaking",
-        credits: 3,
-        category: "Skills",
-        scope: "Register (Formal vs Informal). Hedging and politeness strategies.",
-        strategies: [
-          { title: "Register Analysis", desc: "Compare a UN speech vs. a Sitcom. List phrases for 'agreement' in both." }
-        ]
-      },
-      {
-        code: "MKDI4202",
-        name: "Belajar di Era Digital",
-        credits: 2,
-        category: "Tech",
-        scope: "Digital literacy, hoax busting, digital tools.",
-        strategies: [
-          { title: "Tool Exploration", desc: "Create an account and produce one artifact (e.g., digital poster) for every tool studied." }
-        ]
-      },
-      {
-        code: "MKWN4108",
-        name: "Bahasa Indonesia",
-        credits: 3,
-        category: "General Ed",
-        scope: "Academic Indonesian. Spelling (PUEBI), sentence effectiveness, scientific writing.",
-        strategies: [
-          { title: "Contrastive Analysis", desc: "Compare English linear logic vs. Indonesian circular logic to prevent 'Indoglish'." }
-        ]
-      }
-    ]
-  },
-  {
-    id: 4,
-    title: "Semester 4: Research & Curriculum",
-    description: "Professional specialization, research methodology, and curriculum design.",
-    courses: [
-      {
-        code: "SPBI4206",
-        name: "Extensive Reading",
-        credits: 4,
-        category: "Skills",
-        scope: "Krashen's Input Hypothesis. Quantity over intensity. Building fluency and vocabulary through context.",
-        strategies: [
-          { 
-            title: "The 98% Rule", 
-            desc: "Ensures the text is suitable for Extensive (not Intensive) reading.",
-            actionSteps: [
-              "Open a book to a random page.",
-              "Count the number of unknown words.",
-              "If there are more than 5 unknown words on the page, the text is too hard.",
-              "Reason: You need 98% comprehension to guess vocabulary from context."
-            ] 
-          },
-          { 
-            title: "Visual: Reading Log Graph", 
-            desc: "Gamify your reading habit.",
-            actionSteps: [
-              "Plot 'Pages Read' on the Y-axis.",
-              "Plot 'Time (Days)' on the X-axis.",
-              "A consistently rising slope visually reinforces the habit formation."
-            ] 
-          }
-        ],
-        visualId: "readingGraph"
-      },
-      {
-        code: "SPBI4309",
-        name: "Pragmatics in ELT",
-        credits: 2,
-        category: "Linguistics",
-        scope: "Speech Acts (Austin/Searle), Politeness (Face-saving), Grice's Maxims (Quality, Quantity).",
-        strategies: [
-          { 
-            title: "Discourse Completion Tasks (DCT)", 
-            desc: "Simulate social pressure.",
-            actionSteps: [
-              "Create a scenario: 'You forgot your wallet at a fancy restaurant.'",
-              "Write exactly what you would say to the waiter.",
-              "Analyze the politeness markers used (hedging, apologies)."
-            ] 
-          },
-          { 
-            title: "Maxim Violation Hunt", 
-            desc: "Analyze humor through linguistics.",
-            actionSteps: [
-              "Watch a comedy sitcom.",
-              "Identify moments of laughter.",
-              "Determine which Gricean Maxim was broken (e.g., giving too much info = Maxim of Quantity)."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4307",
-        name: "Research in ELT",
-        credits: 2,
-        category: "Research",
-        scope: "Paradigms: Quantitative, Qualitative, Mixed. Classroom Action Research (PTK).",
-        strategies: [
-          { 
-            title: "Abstract Deconstruction", 
-            desc: "Train your brain to recognize research structures.",
-            actionSteps: [
-              "Read 10 abstracts from ELT journals.",
-              "Highlight the Objective in Yellow.",
-              "Highlight the Methodology in Green.",
-              "Highlight the Findings in Blue."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4209",
-        name: "Syllabus Design",
-        credits: 3,
-        category: "Education",
-        scope: "Needs Analysis, Syllabus Types (Structural, Functional, Task-Based), Material Adaptation.",
-        strategies: [
-          { 
-            title: "Syllabus Reverse Engineering", 
-            desc: "Understand the architect's blueprint.",
-            actionSteps: [
-              "Take a textbook Table of Contents.",
-              "Determine if it is organized by Grammar (Structural Syllabus) or by Topic/Task (Functional/Task-Based Syllabus)."
-            ] 
-          },
-          { 
-            title: "Adaptation Project", 
-            desc: "Tailor generic materials.",
-            actionSteps: [
-              "Take a boring page from a textbook.",
-              "Apply 'Add': Add a communicative game.",
-              "Apply 'Modify': Change the names/places to be local culture."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4212",
-        name: "Pembelajaran Mikro",
-        credits: 3,
-        category: "Education",
-        scope: "Micro-teaching skills: Set induction, Explaining, Questioning, Reinforcement, Closing.",
-        strategies: [
-          { 
-            title: "Video Self-Reflection", 
-            desc: "Objective analysis of teaching performance.",
-            actionSteps: [
-              "Record a 5-minute teaching segment.",
-              "Watch with sound OFF to check body language.",
-              "Watch with sound ON to check clarity of instructions."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4207",
-        name: "Critical Listening",
-        credits: 3,
-        category: "Skills",
-        scope: "Analyzing spoken texts for validity. Debates, ads, speeches. Logical fallacies.",
-        strategies: [
-          { 
-            title: "Fallacy Bingo", 
-            desc: "Gamify critical thinking.",
-            actionSteps: [
-              "Create a bingo card with fallacies (Ad Hominem, Straw Man, Red Herring).",
-              "Listen to a political debate.",
-              "Mark off the fallacies as you hear them."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4208",
-        name: "Language Teaching Assessment",
-        credits: 3,
-        category: "Education",
-        scope: "Principles: Validity, Reliability, Washback. Test types and Item Design.",
-        strategies: [
-          { 
-            title: "Item Analysis", 
-            desc: "Evaluate test quality.",
-            actionSteps: [
-              "Analyze a past exam paper.",
-              "Identify questions that are 'ambiguous' or have 'implausible distractors'.",
-              "Rewrite them to be better."
-            ] 
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 5,
-    title: "Semester 5: Specialization",
-    description: "English for Specific Purposes (ESP) and deep linguistic analysis.",
-    courses: [
-      {
-        code: "SPBI4301",
-        name: "English Morphology & Syntax",
-        credits: 3,
-        category: "Linguistics",
-        scope: "Morphology (Derivational vs Inflectional). Syntax (Phrase Structure Rules, Deep vs Surface structure, Ambiguity).",
-        strategies: [
-          { 
-            title: "Tree Diagram Practice", 
-            desc: "Visualizing structural ambiguity.",
-            actionSteps: [
-              "Draw trees for ambiguous sentences like 'I saw the man with the telescope'.",
-              "Tree 1: PP attached to VP (Using the telescope).",
-              "Tree 2: PP attached to NP (The man had the telescope)."
-            ] 
-          },
-          { 
-            title: "Morpheme Breakdowns", 
-            desc: "Anatomy of words.",
-            actionSteps: [
-              "Take complex words like 'Antidisestablishmentarianism'.",
-              "Strip layers one by one to find the root."
-            ] 
-          }
-        ],
-        visualId: "syntaxTree"
-      },
-      {
-        code: "SPBI4305",
-        name: "Language Teaching Methods",
-        credits: 3,
-        category: "Education",
-        scope: "History: Grammar Translation (GTM), Direct Method, Audio-Lingual (ALM), TPR, Communicative (CLT).",
-        strategies: [
-          { 
-            title: "Timeline Visualization", 
-            desc: "Understanding the historical pendulum.",
-            actionSteps: [
-              "Draw a timeline from 1900 to present.",
-              "Place the methods on it.",
-              "Note the swing from 'Focus on Accuracy' (GTM) to 'Focus on Fluency' (CLT)."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4306",
-        name: "English for Business",
-        credits: 3,
-        category: "ESP",
-        scope: "Correspondence, negotiations, presentations, business vocabulary.",
-        strategies: [
-          { title: "Simulation", desc: "Write a formal complaint letter and the corporate response. Focus on business idioms." }
-        ]
-      },
-      {
-        code: "SPBI4303",
-        name: "English for Tourism",
-        credits: 3,
-        category: "ESP",
-        scope: "Hospitality, tour guiding, gastronomy.",
-        strategies: [
-          { title: "Project-Based Learning", desc: "Create a brochure for your town. Translate culinary terms descriptively." }
-        ]
-      },
-      {
-        code: "SPIK4005",
-        name: "Profesi Keguruan",
-        credits: 2,
-        category: "Education",
-        scope: "Teacher professionalism, ethics, and competencies (Pedagogic, Professional, Social, Personality).",
-        strategies: [
-          { title: "Case Analysis", desc: "Analyze news of teacher misconduct. Identify which competency was violated." }
-        ]
-      },
-      {
-        code: "FSSI4201",
-        name: "Translation",
-        credits: 3,
-        category: "Skills",
-        scope: "Methods (Literal vs Free). Procedures (Transposition, Modulation). Handling idioms.",
-        strategies: [
-          { 
-            title: "Parallel Text Reading", 
-            desc: "Comparing structures across languages.",
-            actionSteps: [
-              "Read a page of an English novel and its Indonesian translation side-by-side.",
-              "Highlight sentences where the structure changed completely (Transposition).",
-              "Try to explain why the change was necessary."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4311",
-        name: "Sociolinguistics",
-        credits: 2,
-        category: "Linguistics",
-        scope: "Language in society. Dialects, Code-switching, Diglossia, Gender.",
-        strategies: [
-          { 
-            title: "Field Observation", 
-            desc: "Observing real-world language use.",
-            actionSteps: [
-              "Listen to a conversation between two bilingual friends.",
-              "Tally how many times they switch languages.",
-              "Note the trigger (e.g., switching to Indonesian for a joke, English for academic terms)."
-            ] 
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 6,
-    title: "Semester 6: Advanced Analysis",
-    description: "Classroom interaction analysis, discourse, and field experience.",
-    courses: [
-      {
-        code: "SPBI4401",
-        name: "Interactive Language Teaching",
-        credits: 3,
-        category: "Education",
-        scope: "Classroom interaction. Teacher Talk Time (TTT) vs Student Talk Time (STT). Feedback.",
-        strategies: [
-          { 
-            title: "Video Analysis", 
-            desc: "Measuring classroom dynamics.",
-            actionSteps: [
-              "Watch a teaching video.",
-              "Use a stopwatch to measure TTT vs STT.",
-              "The goal is often to minimize TTT to maximize student practice."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4302",
-        name: "Discourse Analysis",
-        credits: 2,
-        category: "Linguistics",
-        scope: "Text analysis beyond the sentence. Cohesion (links), Coherence (logic), Conversation Analysis.",
-        strategies: [
-          { 
-            title: "Cohesion Mapping", 
-            desc: "Visualizing text tightness.",
-            actionSteps: [
-              "Draw lines connecting pronouns to their antecedents.",
-              "A text with many crossing lines is 'tightly cohesive'."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4409",
-        name: "Metode Penelitian",
-        credits: 3,
-        category: "Research",
-        scope: "Writing the Proposal (Bab 1-3). Problem definition, Literature Review, Methodology.",
-        strategies: [
-          { 
-            title: "Drafting the Blueprint", 
-            desc: "Structure before prose.",
-            actionSteps: [
-              "Do not start writing prose.",
-              "Start with a Matrix: Title | Problem | Variables | Method | Instrument."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4413",
-        name: "Literary Appreciation",
-        credits: 2,
-        category: "Literature",
-        scope: "Literary criticism. Applying theories (Feminism, Marxism, Psychoanalysis).",
-        strategies: [
-          { 
-            title: "The 'Lens' Method", 
-            desc: "Viewing text through different theories.",
-            actionSteps: [
-              "Read a short story.",
-              "Re-read it wearing 'Feminist Glasses' (look for gender power dynamics).",
-              "Re-read it wearing 'Marxist Glasses' (look for class struggle)."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4213",
-        name: "Pengenalan Lapangan (PLP)",
-        credits: 4,
-        category: "Practicum",
-        scope: "School internship. Observation of culture and teaching practice.",
-        strategies: [
-          { 
-            title: "Reflective Journaling", 
-            desc: "Structured reflection.",
-            actionSteps: [
-              "Use Gibbs Reflective Cycle:",
-              "Description -> Feelings -> Evaluation -> Analysis -> Conclusion -> Action Plan."
-            ] 
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 7,
-    title: "Semester 7: Technology & Thesis",
-    description: "EdTech integration and the final research project.",
-    courses: [
-      {
-        code: "SPBI4406",
-        name: "Technology-enhanced Learning",
-        credits: 3,
-        category: "EdTech",
-        scope: "CALL, MALL, AI in Education, LMS usage.",
-        strategies: [
-          { 
-            title: "Artifact Creation", 
-            desc: "Learning by doing.",
-            actionSteps: [
-              "Create a digital lesson using a tool (e.g., a Kahoot quiz, a Padlet board).",
-              "Focus on pedagogy first, technology second."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4402",
-        name: "Academic Writing",
-        credits: 4,
-        category: "Skills",
-        scope: "Advanced research writing. Paraphrasing, synthesis, APA citation.",
-        strategies: [
-          { 
-            title: "Synthesis Grid", 
-            desc: "Organizing literature.",
-            actionSteps: [
-              "Create a grid where Rows = Sources and Columns = Themes.",
-              "Fill in the grid to see which authors agree/disagree on a theme."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4470",
-        name: "Skripsi",
-        credits: 6,
-        category: "Research",
-        scope: "Independent research thesis under supervision.",
-        strategies: [
-          { 
-            title: "Project Management", 
-            desc: "Treat Skripsi as a job.",
-            actionSteps: [
-              "Create a Gantt Chart.",
-              "Week 1-4: Revision of Proposal.",
-              "Week 5-8: Data Collection.",
-              "Week 9-12: Analysis.",
-              "Week 13-16: Writing & Revision."
-            ] 
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 8,
-    title: "Semester 8: Final Competencies",
-    description: "SLA, Young Learners, and Intercultural Communication.",
-    courses: [
-      {
-        code: "SPBI4405",
-        name: "Second Language Acquisition",
-        credits: 2,
-        category: "Linguistics",
-        scope: "Theories of L2 learning. Behaviorism, Innatism (Chomsky/Krashen), Interactionism.",
-        strategies: [
-          { 
-            title: "Learner Profile Analysis", 
-            desc: "Diagnosing learning barriers.",
-            actionSteps: [
-              "Interview a language learner.",
-              "Analyze their success/failure using the theories.",
-              "Example: 'She speaks well but has bad grammar -> High fluency, low monitoring'."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4407",
-        name: "Teaching Young Learners",
-        credits: 3,
-        category: "Education",
-        scope: "Characteristics of young learners (concrete thinkers). Songs, Chants, TPR.",
-        strategies: [
-          { 
-            title: "Activity Bank", 
-            desc: "Preparation for chaos.",
-            actionSteps: [
-              "Collect 10 'Zero-Prep' games (e.g., Simon Says) that can be used instantly in a chaotic classroom."
-            ] 
-          }
-        ]
-      },
-      {
-        code: "SPBI4408",
-        name: "Intercultural Communication",
-        credits: 2,
-        category: "Linguistics",
-        scope: "Culture vs Comm. Hofstede's Dimensions. High/Low Context.",
-        strategies: [
-          { 
-            title: "Critical Incident Analysis", 
-            desc: "Understanding cultural failure.",
-            actionSteps: [
-              "Read case studies of 'culture shock'.",
-              "Identify the cultural dimension mismatch (e.g., High power distance employee afraid to correct Low power distance boss)."
-            ] 
-          }
-        ]
-      }
-    ]
-  }
-];
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
 
-/**
- * --- VISUAL COMPONENTS ---
- * Interactive SVG Learning Aids
- */
+        .active-tab {
+            border-bottom: 2px solid #b45309; /* Amber-700 */
+            color: #78350f; /* Amber-900 */
+            font-weight: 600;
+        }
 
-const SQ3RVisual = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const steps = generalToolkit[0].steps;
-  const colors = ["yellow", "orange", "red", "purple", "green"];
+        .inactive-tab {
+            border-bottom: 2px solid transparent;
+            color: #78716c; /* Stone-500 */
+        }
+        .inactive-tab:hover {
+            color: #44403c;
+            border-bottom: 2px solid #e7e5e4;
+        }
+    </style>
+    <!-- Application Structure Plan: 
+         1. Header: Sets the academic tone.
+         2. Evolution Tracker: A high-level visual indicating the user's transformation journey (Apprentice -> Expert).
+         3. Strategic Phase Explorer (The Core): An interactive tab system allowing deep dives into the 3 phases. This prevents information overload by showing one phase's detailed strategies at a time.
+         4. Curriculum Dashboard: Data visualization section. Users can toggle between "Category Distribution" (Donut) and "Workload Intensity" (Bar). A filterable table allows finding specific courses. This satisfies the "Data Analyst" requirement.
+         5. The Scholar's Toolkit: A grid of cards for study techniques (Feynman, etc.).
+         6. Footer: Critical thinking prompts.
+    -->
+    <!-- Visualization & Content Choices:
+         - Phase Explorer: HTML/JS Tabs. Goal: Allow focused reading of complex strategies.
+         - Curriculum Charts: Chart.js. Goal: Visualize the balance of the degree. Donut for category split, Bar for semester load.
+         - Course List: HTML Table with JS Filter. Goal: Quick reference.
+         - Toolkit: Card Grid. Goal: Actionable advice.
+         - NO SVG/Mermaid: All icons are Unicode or CSS shapes. Charts are Canvas.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased selection:bg-amber-100 selection:text-amber-900">
 
-  return (
-    <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg border-2 border-slate-100 w-full">
-      <div className="relative w-64 h-64 mb-6">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <BookOpen className="text-blue-600" size={32} />
+    <!-- Navigation / Header -->
+    <header class="w-full bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🏛️</span>
+                <h1 class="text-xl font-bold text-stone-900 tracking-tight">The Architect's Blueprint</h1>
+            </div>
+            <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#roadmap" class="text-stone-600 hover:text-amber-700 transition">Roadmap</a>
+                <a href="#curriculum" class="text-stone-600 hover:text-amber-700 transition">Curriculum Data</a>
+                <a href="#toolkit" class="text-stone-600 hover:text-amber-700 transition">Toolkit</a>
+            </nav>
         </div>
-        {steps.map((step, idx) => {
-          const angle = (idx * 72) - 90;
-          const radius = 100;
-          const x = radius * Math.cos((angle * Math.PI) / 180);
-          const y = radius * Math.sin((angle * Math.PI) / 180);
-          return (
-            <button
-              key={idx}
-              onClick={() => setActiveStep(idx)}
-              className={`absolute w-20 h-8 -ml-10 -mt-4 rounded-full text-xs font-bold transition-all shadow-sm border
-                ${activeStep === idx ? `bg-${colors[idx]}-100 border-${colors[idx]}-400 scale-110 ring-2 ring-${colors[idx]}-200` : 'bg-white border-slate-200'}
-              `}
-              style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
-            >
-              {step.name.split(" ")[0]}
-            </button>
-          );
-        })}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none text-slate-200 -z-10">
-          <circle cx="50%" cy="50%" r="40%" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="6 6" />
-        </svg>
-      </div>
-      <div className="bg-slate-50 p-4 rounded-lg border-l-4 border-blue-500 w-full animate-fade-in">
-        <h4 className="font-bold text-blue-900 mb-1">{steps[activeStep].name}</h4>
-        <p className="text-sm text-slate-600">{steps[activeStep].desc}</p>
-      </div>
-    </div>
-  );
-};
+    </header>
 
-const BurgerVisual = () => {
-  const [layer, setLayer] = useState("Topic");
-  return (
-    <div className="flex flex-col items-center w-full max-w-xs mx-auto">
-      <div 
-        className={`w-full h-12 bg-amber-300 rounded-t-full border-2 border-amber-500 flex items-center justify-center cursor-pointer transition-transform ${layer==='Topic'?'scale-105 shadow-md':''}`}
-        onClick={()=>setLayer("Topic")}
-      >
-        <span className="font-bold text-amber-900 text-sm">Topic Sentence</span>
-      </div>
-      <div className="w-[95%] flex flex-col gap-1 -my-1 z-10">
-        <div onClick={()=>setLayer("Support")} className={`h-8 bg-green-400 rounded border-2 border-green-600 cursor-pointer flex items-center justify-center ${layer==='Support'?'scale-105 shadow-md':''}`}>
-          <span className="text-xs font-bold text-white">Support</span>
-        </div>
-        <div onClick={()=>setLayer("Evidence")} className={`h-8 bg-red-400 rounded border-2 border-red-600 cursor-pointer flex items-center justify-center ${layer==='Evidence'?'scale-105 shadow-md':''}`}>
-          <span className="text-xs font-bold text-white">Evidence</span>
-        </div>
-      </div>
-      <div 
-        className={`w-full h-10 bg-amber-300 rounded-b-xl border-2 border-amber-500 flex items-center justify-center cursor-pointer mt-1 transition-transform ${layer==='Conclusion'?'scale-105 shadow-md':''}`}
-        onClick={()=>setLayer("Conclusion")}
-      >
-        <span className="font-bold text-amber-900 text-sm">Conclusion</span>
-      </div>
-      <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded text-center w-full">
-        <p className="text-sm text-slate-700">
-          {layer === 'Topic' && "The 'Roof'. Introduces the main idea."}
-          {layer === 'Support' && "The 'Lettuce'. Adds details and examples."}
-          {layer === 'Evidence' && "The 'Meat'. Provides core data/proof."}
-          {layer === 'Conclusion' && "The 'Foundation'. Restates and transitions."}
-        </p>
-      </div>
-    </div>
-  );
-};
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
 
-const SyntaxTreeVisual = () => {
-  const [hl, setHl] = useState("");
-  return (
-    <div className="flex flex-col items-center w-full">
-      <svg viewBox="0 0 200 120" className="w-full max-w-xs bg-white rounded border border-slate-200 cursor-pointer">
-        <g stroke={hl ? "#cbd5e1" : "#64748b"} strokeWidth="1">
-          <line x1="100" y1="20" x2="60" y2="60" className={hl==='NP'?'stroke-blue-500 stroke-2':''} />
-          <line x1="100" y1="20" x2="140" y2="60" className={hl==='VP'?'stroke-blue-500 stroke-2':''} />
-          <line x1="140" y1="65" x2="120" y2="95" className={hl==='VP'?'stroke-blue-500 stroke-2':''} />
-          <line x1="140" y1="65" x2="160" y2="95" className={hl==='VP'?'stroke-blue-500 stroke-2':''} />
-        </g>
-        <text x="100" y="20" textAnchor="middle" className="text-xs font-bold fill-slate-800" onClick={()=>setHl('S')}>S</text>
-        <text x="60" y="60" textAnchor="middle" className={`text-xs font-bold ${hl==='NP'?'fill-blue-600':'fill-slate-800'}`} onClick={()=>setHl('NP')}>NP</text>
-        <text x="140" y="60" textAnchor="middle" className={`text-xs font-bold ${hl==='VP'?'fill-blue-600':'fill-slate-800'}`} onClick={()=>setHl('VP')}>VP</text>
-        <text x="120" y="105" textAnchor="middle" className="text-[8px] fill-slate-500">V</text>
-        <text x="160" y="105" textAnchor="middle" className="text-[8px] fill-slate-500">NP</text>
-      </svg>
-      <p className="text-xs text-slate-500 mt-2 text-center">Click S, NP, or VP nodes</p>
-    </div>
-  );
-};
+        <!-- Intro Section -->
+        <section class="text-center max-w-3xl mx-auto">
+            <h2 class="text-4xl font-serif font-bold text-stone-900 mb-4">Strategic Learning for English Education</h2>
+            <p class="text-lg text-stone-600 leading-relaxed">
+                This is not just a list of courses. It is a blueprint for constructing your identity as a scholar and educator. 
+                Move beyond simple time management to <span class="font-semibold text-amber-700">cognitive synthesis</span>.
+            </p>
+        </section>
 
-const ZPDVisual = () => {
-  const [zone, setZone] = useState('mid');
-  return (
-    <div className="flex flex-col items-center w-full max-w-xs">
-      <div className="relative w-48 h-48 flex items-center justify-center cursor-pointer">
-        <div onClick={()=>setZone('out')} className={`absolute w-48 h-48 rounded-full border-2 border-red-200 flex justify-center pt-2 ${zone==='out'?'bg-red-100':''}`}><span className="text-[8px] text-red-400">Can't do</span></div>
-        <div onClick={(e)=>{e.stopPropagation();setZone('mid')}} className={`absolute w-32 h-32 rounded-full border-2 border-blue-200 flex justify-center pt-2 ${zone==='mid'?'bg-blue-100':''}`}><span className="text-[8px] text-blue-500 font-bold">ZPD (Help)</span></div>
-        <div onClick={(e)=>{e.stopPropagation();setZone('in')}} className={`absolute w-16 h-16 rounded-full border-2 border-green-200 flex items-center justify-center ${zone==='in'?'bg-green-100':''}`}><span className="text-[8px] text-green-600">Alone</span></div>
-      </div>
-      <p className="text-xs mt-2 text-center font-medium text-slate-600">
-        {zone==='mid' ? "Instruction should target here (Scaffolding)" : zone==='in' ? "Boredom Zone" : "Frustration Zone"}
-      </p>
-    </div>
-  );
-};
-
-/**
- * --- MAIN APP ---
- */
-export default function EnglishEdApp() {
-  const [view, setView] = useState('home'); // home, semester, course, toolkit
-  const [selectedSemester, setSelectedSemester] = useState(null);
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // Navigation Handlers
-  const goHome = () => { setView('home'); setIsMenuOpen(false); };
-  const goToolkit = () => { setView('toolkit'); setIsMenuOpen(false); };
-  const goSemester = (semId) => {
-    setSelectedSemester(semesters.find(s => s.id === semId));
-    setView('semester');
-    setIsMenuOpen(false);
-  };
-  const goCourse = (course) => {
-    setSelectedCourse(course);
-    setView('course');
-  };
-
-  // Renderers
-  const renderHome = () => (
-    <div className="space-y-8 animate-fade-in">
-      <div className="bg-gradient-to-r from-blue-900 to-indigo-800 text-white p-10 rounded-3xl shadow-2xl relative overflow-hidden">
-        <div className="relative z-10">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Bachelor of English Education</h1>
-          <p className="text-xl text-blue-100 max-w-2xl font-light">
-            Strategic Pedagogical Framework & Curriculum Analysis at Universitas Terbuka.
-          </p>
-          <button onClick={() => goSemester(1)} className="mt-8 bg-white text-blue-900 px-6 py-3 rounded-full font-bold shadow-lg hover:bg-blue-50 transition flex items-center gap-2">
-            Start Orientation <ArrowRight size={18} />
-          </button>
-        </div>
-        <GraduationCap className="absolute right-[-20px] bottom-[-20px] text-white opacity-10 w-64 h-64" />
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div onClick={goToolkit} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer group">
-          <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
-            <PenTool className="text-amber-600" />
-          </div>
-          <h3 className="text-xl font-bold text-slate-800 mb-2">The Strategy Toolkit</h3>
-          <p className="text-slate-600 text-sm">Master universal methods like SQ3R and Visual Knowledge Construction used across the entire degree.</p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-            <Layout className="text-blue-600" />
-          </div>
-          <h3 className="text-xl font-bold text-slate-800 mb-2">Program Structure</h3>
-          <p className="text-slate-600 text-sm">8 Semesters (SIPAS) designed for autonomy. From intensive skill building to professional research.</p>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderToolkit = () => (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={goHome} className="p-2 hover:bg-slate-100 rounded-full"><ArrowLeft /></button>
-        <h2 className="text-3xl font-bold text-slate-800">General Learning Toolkit</h2>
-      </div>
-
-      <div className="grid gap-8">
-        {generalToolkit.map((tool, idx) => (
-          <div key={idx} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-8 border-b border-slate-100 bg-slate-50">
-              <h3 className="text-2xl font-bold text-slate-800">{tool.title}</h3>
-              <p className="text-blue-600 font-medium mt-1">{tool.subtitle}</p>
-              <p className="text-slate-600 mt-4 leading-relaxed max-w-3xl">{tool.description}</p>
+        <!-- Section 1: The Evolution Tracker (Summary Table Viz) -->
+        <section id="evolution" class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-8">
+            <div class="mb-6">
+                <h3 class="text-2xl font-serif font-semibold text-stone-800">Your Evolutionary Path</h3>
+                <p class="text-stone-500 mt-2">See how your role shifts from Semester 1 to Semester 8.</p>
             </div>
             
-            <div className="p-8 grid md:grid-cols-2 gap-8 items-start">
-              <div className="space-y-6">
-                <h4 className="font-bold text-slate-700 flex items-center gap-2">
-                  <CheckCircle2 size={18} className="text-green-500" />
-                  Step-by-Step Strategy
-                </h4>
-                <div className="space-y-4">
-                  {tool.steps.map((step, sIdx) => (
-                    <div key={sIdx} className="flex gap-4">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
-                        {sIdx + 1}
-                      </div>
-                      <div>
-                        <h5 className="font-bold text-slate-800">{step.name}</h5>
-                        <p className="text-sm text-slate-600">{step.desc}</p>
-                      </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Phase 1 -->
+                <div class="bg-stone-50 rounded-lg p-5 border-l-4 border-emerald-500">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Semesters 1-3</span>
+                        <span class="text-emerald-600 font-bold">Phase 1</span>
                     </div>
-                  ))}
+                    <h4 class="text-lg font-bold text-stone-800 mb-1">The Apprentice</h4>
+                    <p class="text-sm text-stone-600 italic mb-3">"I am learning English."</p>
+                    <div class="text-sm border-t border-stone-200 pt-3">
+                        <span class="font-semibold">Output:</span> High Proficiency
+                    </div>
                 </div>
-              </div>
-              
-              {tool.visualType === 'sq3r' && (
-                <div className="bg-slate-50 rounded-xl p-6 border border-slate-200 flex justify-center">
-                  <SQ3RVisual />
+
+                <!-- Phase 2 -->
+                <div class="bg-stone-50 rounded-lg p-5 border-l-4 border-amber-500">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Semesters 4-6</span>
+                        <span class="text-amber-600 font-bold">Phase 2</span>
+                    </div>
+                    <h4 class="text-lg font-bold text-stone-800 mb-1">The Analyst</h4>
+                    <p class="text-sm text-stone-600 italic mb-3">"I analyze how it works."</p>
+                    <div class="text-sm border-t border-stone-200 pt-3">
+                        <span class="font-semibold">Output:</span> Lesson Plans & Methods
+                    </div>
                 </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 
-  const renderSemester = () => (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center gap-4 mb-2">
-        <button onClick={goHome} className="p-2 hover:bg-slate-100 rounded-full"><ArrowLeft /></button>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800">{selectedSemester.title}</h2>
-          <p className="text-slate-500">{selectedSemester.description}</p>
-        </div>
-      </div>
-
-      <div className="grid gap-4">
-        {selectedSemester.courses.map((course, idx) => (
-          <div 
-            key={idx} 
-            onClick={() => goCourse(course)}
-            className="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition cursor-pointer flex justify-between items-center"
-          >
-            <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">
-                <span className="bg-slate-100 px-2 py-1 rounded">{course.code}</span>
-                <span>{course.credits} SKS</span>
-              </div>
-              <h3 className="text-lg font-bold text-slate-800 group-hover:text-blue-700 transition">{course.name}</h3>
-              <p className="text-sm text-slate-500 mt-1">{course.category}</p>
-            </div>
-            <ChevronRight className="text-slate-300 group-hover:text-blue-500 transition" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderCourse = () => {
-    // Select Visual Component based on visualId
-    const VisualComponent = {
-      'textMining': () => <div className="p-4 bg-yellow-50 text-center rounded border border-yellow-200"><PenTool className="mx-auto mb-2 text-yellow-600"/>Text Mining Map Concept</div>,
-      'burger': BurgerVisual,
-      'syntaxTree': SyntaxTreeVisual,
-      'vocalTract': () => <div className="p-4 bg-pink-50 text-center rounded border border-pink-200">Vocal Tract Diagram (Lips/Teeth/Velum)</div>,
-      'biasScale': () => <div className="h-4 bg-gradient-to-r from-red-200 via-white to-green-200 rounded border border-slate-300 relative"><div className="absolute top-1/2 left-1/2 w-1 h-6 bg-black -translate-x-1/2 -translate-y-1/2"></div></div>,
-      'zpd': ZPDVisual,
-      'jigsaw': () => <div className="flex gap-2 justify-center"><div className="w-8 h-8 bg-red-200 rounded"></div><ArrowRight/><div className="w-8 h-8 bg-blue-200 rounded"></div></div>,
-      'readingGraph': () => <div className="w-32 h-20 border-l-2 border-b-2 border-slate-400 relative"><div className="absolute bottom-0 left-0 w-full h-full bg-blue-100 opacity-50 clip-path-polygon"></div></div>,
-    }[selectedCourse.visualId];
-
-    return (
-      <div className="animate-fade-in pb-20">
-        <div className="sticky top-0 bg-slate-50/90 backdrop-blur-sm z-10 py-4 border-b border-slate-200 mb-6 flex items-center justify-between">
-          <button 
-            onClick={() => setView('semester')} 
-            className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-blue-600 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200"
-          >
-            <ArrowLeft size={16} /> Back to {selectedSemester.id === 1 ? "Foundations" : `Semester ${selectedSemester.id}`}
-          </button>
-          <span className="text-xs font-mono text-slate-400">{selectedCourse.code}</span>
-        </div>
-
-        {/* Header */}
-        <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm mb-8">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div>
-               <div className="flex gap-3 mb-4">
-                 <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">{selectedCourse.credits} SKS</span>
-                 <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-full">{selectedCourse.category}</span>
-               </div>
-               <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">{selectedCourse.name}</h1>
-            </div>
-            {VisualComponent && (
-              <div className="hidden md:block w-48 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <p className="text-xs font-bold text-slate-400 uppercase mb-2 text-center">Interactive Visual</p>
-                <VisualComponent />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid md:grid-cols-3 gap-8">
-          
-          {/* Left Col: Scope & Strategy */}
-          <div className="md:col-span-2 space-y-8">
-            <section className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <Brain className="text-blue-500" />
-                Theoretical Scope & Curriculum Depth
-              </h3>
-              <p className="text-slate-700 leading-relaxed text-lg">
-                {selectedCourse.scope}
-              </p>
-            </section>
-
-            <section className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <Target className="text-red-500" />
-                Strategic Toolkit
-              </h3>
-              <div className="grid gap-6">
-                {selectedCourse.strategies.map((strat, i) => (
-                  <div key={i} className="flex gap-4 p-6 rounded-xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-colors">
-                    <div className="mt-1 flex-shrink-0">
-                      <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-sm">
-                        {i + 1}
-                      </div>
+                <!-- Phase 3 -->
+                <div class="bg-stone-50 rounded-lg p-5 border-l-4 border-indigo-500">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-stone-400">Semesters 7-8</span>
+                        <span class="text-indigo-600 font-bold">Phase 3</span>
                     </div>
-                    <div className="space-y-3 w-full">
-                      <div>
-                        <h4 className="font-bold text-slate-900 text-lg">{strat.title}</h4>
-                        <p className="text-slate-600 leading-relaxed">{strat.desc}</p>
-                      </div>
-
-                      {/* Action Steps Rendering */}
-                      {strat.actionSteps && (
-                        <div className="bg-white p-4 rounded-lg border border-slate-200 mt-2">
-                           <h5 className="text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                             <ListOrdered size={14} /> Action Steps
-                           </h5>
-                           <ul className="space-y-2">
-                             {strat.actionSteps.map((step, stepIdx) => (
-                               <li key={stepIdx} className="text-sm text-slate-700 flex gap-2">
-                                 <span className="text-slate-400">•</span> {step}
-                               </li>
-                             ))}
-                           </ul>
-                        </div>
-                      )}
-
-                      {/* Why It Works Rendering */}
-                      {strat.whyItWorks && (
-                        <div className="bg-blue-50/50 p-3 rounded border border-blue-100 flex gap-2 items-start">
-                           <Microscope size={16} className="text-blue-500 mt-0.5 flex-shrink-0"/>
-                           <p className="text-xs text-blue-800 font-medium">
-                             <span className="font-bold">Theory:</span> {strat.whyItWorks}
-                           </p>
-                        </div>
-                      )}
+                    <h4 class="text-lg font-bold text-stone-800 mb-1">The Expert</h4>
+                    <p class="text-sm text-stone-600 italic mb-3">"I create new knowledge."</p>
+                    <div class="text-sm border-t border-stone-200 pt-3">
+                        <span class="font-semibold">Output:</span> Thesis & Innovation
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </div>
+                </div>
+            </div>
+        </section>
 
-          {/* Right Col: Mobile Visual + Quick Info */}
-          <div className="space-y-6">
-            {VisualComponent && (
-              <div className="md:hidden bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                 <h4 className="font-bold text-slate-500 text-xs uppercase mb-4 text-center">Interactive Learning Aid</h4>
-                 <VisualComponent />
-              </div>
-            )}
+        <!-- Section 2: Interactive Roadmap (The Strategy) -->
+        <section id="roadmap" class="scroll-mt-20">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-6 border-b border-stone-200 pb-4">
+                <div class="max-w-2xl">
+                    <h3 class="text-2xl font-serif font-bold text-stone-900">Strategic Phases & Actions</h3>
+                    <p class="text-stone-600 mt-2">Select a phase to reveal specific learning strategies, critical twists, and course connections.</p>
+                </div>
+                <!-- Tabs -->
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <button onclick="switchPhase('p1')" id="tab-p1" class="active-tab pb-2 text-sm font-medium transition-colors focus:outline-none">Phase 1: Foundation</button>
+                    <button onclick="switchPhase('p2')" id="tab-p2" class="inactive-tab pb-2 text-sm font-medium transition-colors focus:outline-none">Phase 2: The Bridge</button>
+                    <button onclick="switchPhase('p3')" id="tab-p3" class="inactive-tab pb-2 text-sm font-medium transition-colors focus:outline-none">Phase 3: The Scholar</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div id="phase-content" class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-10 min-h-[400px]">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- Section 3: Curriculum Data Dashboard -->
+        <section id="curriculum" class="scroll-mt-20">
+            <div class="mb-8">
+                <h3 class="text-2xl font-serif font-bold text-stone-900">Curriculum Analytics</h3>
+                <p class="text-stone-600 mt-2">
+                    Analyze the program structure. Use the charts to understand the balance between theory (Linguistics), practice (Skills), and application (Pedagogy).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                <!-- Chart 1: Distribution -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <h4 class="text-sm font-bold uppercase tracking-wide text-stone-500 mb-4 text-center">Credit Distribution (SKS) by Category</h4>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center text-xs text-stone-500">
+                        Visualizes the "Pillars" of your degree. Note the balance between Pedagogy and Skills.
+                    </div>
+                </div>
+
+                <!-- Chart 2: Timeline -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <h4 class="text-sm font-bold uppercase tracking-wide text-stone-500 mb-4 text-center">Workload Intensity (SKS) per Semester</h4>
+                    <div class="chart-container">
+                        <canvas id="semesterChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center text-xs text-stone-500">
+                        Semesters 3-6 are the "Heavy Lift" periods. Plan your extracurriculars accordingly.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filterable Course List -->
+            <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+                <div class="p-4 border-b border-stone-200 bg-stone-50 flex flex-wrap gap-4 items-center justify-between">
+                    <h4 class="font-bold text-stone-700">Course Explorer</h4>
+                    <div class="flex gap-2">
+                        <select id="semesterFilter" onchange="filterCourses()" class="bg-white border border-stone-300 text-stone-700 text-sm rounded-md focus:ring-amber-500 focus:border-amber-500 block p-2">
+                            <option value="all">All Semesters</option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="6">Semester 6</option>
+                            <option value="7">Semester 7</option>
+                            <option value="8">Semester 8</option>
+                        </select>
+                        <select id="categoryFilter" onchange="filterCourses()" class="bg-white border border-stone-300 text-stone-700 text-sm rounded-md focus:ring-amber-500 focus:border-amber-500 block p-2">
+                            <option value="all">All Categories</option>
+                            <option value="Skills">Language Skills</option>
+                            <option value="Linguistics">Linguistics</option>
+                            <option value="Pedagogy">Education & Pedagogy</option>
+                            <option value="Literature">Literature</option>
+                            <option value="Specialized">Supporting & Specialized</option>
+                            <option value="General">General (MKWN/General)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-stone-600">
+                        <thead class="text-xs text-stone-700 uppercase bg-stone-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Sem</th>
+                                <th scope="col" class="px-6 py-3">Code</th>
+                                <th scope="col" class="px-6 py-3">Course Name</th>
+                                <th scope="col" class="px-6 py-3">SKS</th>
+                                <th scope="col" class="px-6 py-3">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseTableBody">
+                            <!-- JS Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: The Scholar's Toolkit -->
+        <section id="toolkit" class="scroll-mt-20">
+            <div class="mb-8">
+                <h3 class="text-2xl font-serif font-bold text-stone-900">The Scholar's Toolkit</h3>
+                <p class="text-stone-600 mt-2">
+                    Specific techniques tailored to handle the heavy reading, abstract theory, and skill acquisition of this program.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Tool 1 -->
+                <div class="bg-white p-6 rounded-xl border border-stone-200 card-hover group">
+                    <div class="text-amber-600 text-3xl mb-4">🧪</div>
+                    <h4 class="text-xl font-bold text-stone-800 mb-2">The "Laboratory" Mindset</h4>
+                    <span class="inline-block px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full mb-4">For: Skills (Speaking/Listening)</span>
+                    <p class="text-stone-600 mb-4">
+                        Don't just study English; inhabit it. Treat your daily life as a lab experiment.
+                    </p>
+                    <div class="bg-stone-50 p-4 rounded-lg text-sm text-stone-700 border border-stone-100">
+                        <strong>Action:</strong> Narrate your life. Change your phone language. Shadow audio clips immediately.
+                    </div>
+                </div>
+
+                <!-- Tool 2 -->
+                <div class="bg-white p-6 rounded-xl border border-stone-200 card-hover">
+                    <div class="text-amber-600 text-3xl mb-4">🧠</div>
+                    <h4 class="text-xl font-bold text-stone-800 mb-2">The Feynman Technique</h4>
+                    <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full mb-4">For: Linguistics/Theory</span>
+                    <p class="text-stone-600 mb-4">
+                        If you can't explain it simply, you don't understand it well enough.
+                    </p>
+                    <div class="bg-stone-50 p-4 rounded-lg text-sm text-stone-700 border border-stone-100">
+                        <strong>Action:</strong> Explain "Morpheme vs Allomorph" to a child. If you get stuck, go back to the book.
+                    </div>
+                </div>
+
+                <!-- Tool 3 -->
+                <div class="bg-white p-6 rounded-xl border border-stone-200 card-hover">
+                    <div class="text-amber-600 text-3xl mb-4">🗃️</div>
+                    <h4 class="text-xl font-bold text-stone-800 mb-2">Zettelkasten Method</h4>
+                    <span class="inline-block px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full mb-4">For: Research/Writing</span>
+                    <p class="text-stone-600 mb-4">
+                        Stop writing from a blank page. Build a database of connected thoughts.
+                    </p>
+                    <div class="bg-stone-50 p-4 rounded-lg text-sm text-stone-700 border border-stone-100">
+                        <strong>Action:</strong> Connect an idea from Sem 2 (Reading) to Sem 5 (Teaching Methods) in your notes.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer / Critical Thinking -->
+        <footer class="bg-stone-900 text-stone-300 rounded-xl p-8 md:p-12 text-center">
+            <h3 class="text-xl font-serif font-bold text-white mb-4">Critical Inquiry Prompt</h3>
+            <p class="max-w-2xl mx-auto text-stone-400 mb-6">
+                "Does 'Communicative Language Teaching' work in a crowded classroom in rural Indonesia? Why or why not?"
+            </p>
+            <div class="text-sm text-stone-500">
+                Use your knowledge from <em>Sociolinguistics</em> and <em>Philosophy of Education</em> to answer this in your Commonplace Book.
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA STORAGE ---
+        // Course Data derived from iya.pdf
+        const courses = [
+            // Sem 1
+            {sem: 1, code: 'SPBI4102', name: 'Intensive Reading', sks: 3, cat: 'Skills'},
+            {sem: 1, code: 'MKWN4110', name: 'Pancasila', sks: 2, cat: 'General'},
+            {sem: 1, code: 'SPBI4103', name: 'Basic Composition', sks: 3, cat: 'Skills'},
+            {sem: 1, code: 'SPBI4104', name: 'Verb Patterns in Texts', sks: 4, cat: 'Linguistics'},
+            {sem: 1, code: 'MKWN4101', name: 'Pendidikan Agama Islam', sks: 3, cat: 'General'},
+            {sem: 1, code: 'SPBI4101', name: 'Listening for General Purposes', sks: 2, cat: 'Skills'},
+            // Sem 2
+            {sem: 2, code: 'SPBI4107', name: 'Introduction to Linguistics', sks: 2, cat: 'Linguistics'},
+            {sem: 2, code: 'SPBI4109', name: 'Intensive Listening', sks: 3, cat: 'Skills'},
+            {sem: 2, code: 'SPBI4110', name: 'Clause Complexes in Texts', sks: 3, cat: 'Linguistics'},
+            {sem: 2, code: 'MKWN4109', name: 'Pendidikan Kewarganegaraan', sks: 2, cat: 'General'},
+            {sem: 2, code: 'SPBI4105', name: 'Speaking for General Communication', sks: 2, cat: 'Skills'},
+            {sem: 2, code: 'SPBI4106', name: 'Critical Reading', sks: 3, cat: 'Skills'},
+            {sem: 2, code: 'SPBI4108', name: 'Introduction to Literature', sks: 2, cat: 'Literature'},
+            // Sem 3
+            {sem: 3, code: 'SPIK4002', name: 'Perkembangan Peserta Didik', sks: 2, cat: 'Pedagogy'},
+            {sem: 3, code: 'MKDI4202', name: 'Belajar di Era Digital', sks: 2, cat: 'General'},
+            {sem: 3, code: 'MKWN4108', name: 'Bahasa Indonesia', sks: 3, cat: 'General'},
+            {sem: 3, code: 'SPBI4203', name: 'Essay Writing', sks: 3, cat: 'Skills'},
+            {sem: 3, code: 'SPBI4205', name: 'Structural Revision and Conversion', sks: 4, cat: 'Linguistics'},
+            {sem: 3, code: 'SPBI4204', name: 'Contextual Speaking', sks: 3, cat: 'Skills'},
+            {sem: 3, code: 'SPBI4201', name: 'Language Teaching Strategies', sks: 4, cat: 'Pedagogy'},
+            // Sem 4
+            {sem: 4, code: 'SPBI4206', name: 'Extensive Reading', sks: 4, cat: 'Skills'},
+            {sem: 4, code: 'SPBI4309', name: 'Pragmatics in ELT', sks: 2, cat: 'Linguistics'},
+            {sem: 4, code: 'SPBI4207', name: 'Critical Listening', sks: 3, cat: 'Skills'},
+            {sem: 4, code: 'SPBI4307', name: 'Research in ELT', sks: 2, cat: 'Pedagogy'},
+            {sem: 4, code: 'SPBI4212', name: 'Pembelajaran Mikro', sks: 3, cat: 'Pedagogy'},
+            {sem: 4, code: 'SPBI4209', name: 'Syllabus Design and Material Dev', sks: 3, cat: 'Pedagogy'},
+            {sem: 4, code: 'SPBI4208', name: 'Language Teaching Assessment', sks: 3, cat: 'Pedagogy'},
+            // Sem 5
+            {sem: 5, code: 'SPIK4005', name: 'Profesi Keguruan', sks: 2, cat: 'Pedagogy'},
+            {sem: 5, code: 'MKKI4301', name: 'Pemberdayaan Masyarakat', sks: 3, cat: 'General'},
+            {sem: 5, code: 'SPBI4306', name: 'English for Business', sks: 3, cat: 'Specialized'},
+            {sem: 5, code: 'SPBI4305', name: 'Language Teaching Methods', sks: 3, cat: 'Pedagogy'},
+            {sem: 5, code: 'SPBI4303', name: 'English for Tourism', sks: 3, cat: 'Specialized'},
+            {sem: 5, code: 'SPBI4301', name: 'English Morphology and Syntax', sks: 3, cat: 'Linguistics'},
+            {sem: 5, code: 'SPBI4210', name: 'Academic Speaking', sks: 3, cat: 'Skills'},
+            {sem: 5, code: 'FSS14205', name: 'Penerjemahan Karya Fiksi', sks: 3, cat: 'Specialized'},
+            // {sem: 5, code: 'FSSI4201', name: 'Teori dan Masalah Penerjemahan', sks: 3, cat: 'Specialized'}, // Removed to balance logic based on PDF grouping
+            {sem: 5, code: 'SPBI4312', name: 'English for Science and Tech', sks: 2, cat: 'Specialized'},
+            {sem: 5, code: 'SPBI4311', name: 'Sociolinguistics', sks: 2, cat: 'Linguistics'},
+            {sem: 5, code: 'SPIK4006', name: 'Filsafat Ilmu', sks: 2, cat: 'General'},
+            // Sem 6
+            {sem: 6, code: 'SPBI4401', name: 'Interactive Language Teaching', sks: 3, cat: 'Pedagogy'},
+            {sem: 6, code: 'SPBI4302', name: 'Discourse Analysis', sks: 2, cat: 'Linguistics'},
+            {sem: 6, code: 'SPB14409', name: 'Metode Penelitian', sks: 3, cat: 'Specialized'},
+            {sem: 6, code: 'SPBI4413', name: 'Literary Appreciation', sks: 2, cat: 'Literature'},
+            {sem: 6, code: 'MKKI4201', name: 'Pengantar Statistika', sks: 3, cat: 'General'},
+            {sem: 6, code: 'SPBI4213', name: 'Pengenalan Lapangan Persekolahan', sks: 4, cat: 'Pedagogy'},
+            {sem: 6, code: 'SPIK4001', name: 'Pengantar Pendidikan', sks: 3, cat: 'Pedagogy'},
+            // Sem 7
+            {sem: 7, code: 'SPBI4406', name: 'Tech-enhanced Language Learning', sks: 3, cat: 'Pedagogy'},
+            {sem: 7, code: 'SPBI4402', name: 'Academic Writing', sks: 4, cat: 'Skills'},
+            {sem: 7, code: 'SPBI4470', name: 'Skripsi (Penelitian)', sks: 6, cat: 'Specialized'},
+            {sem: 7, code: 'SPTP4406', name: 'Inovasi Pembelajaran', sks: 3, cat: 'Pedagogy'},
+            {sem: 7, code: 'SPBI4460', name: 'Artikel Ilmiah', sks: 6, cat: 'Specialized'},
+            // Sem 8
+            {sem: 8, code: 'SPBI4410', name: 'Translation', sks: 2, cat: 'Specialized'},
+            {sem: 8, code: 'SPBI4405', name: 'Second Language Acquisition', sks: 2, cat: 'Linguistics'},
+            {sem: 8, code: 'SPIN4404', name: 'Psikolinguistik', sks: 3, cat: 'Linguistics'},
+            {sem: 8, code: 'SPBI4408', name: 'Intercultural Communication', sks: 2, cat: 'Linguistics'},
+            {sem: 8, code: 'SPBI4407', name: 'Teaching English to Young Learners', sks: 3, cat: 'Pedagogy'},
+            {sem: 8, code: 'MKDI4203', name: 'Kewirausahaan di Era Digital', sks: 3, cat: 'General'}
+        ];
+
+        // Strategy Data
+        const phaseData = {
+            p1: {
+                title: "Phase 1: The Self-Reflective Learner (Sem 1-3)",
+                goal: "Achieve high proficiency while observing *how* you learn.",
+                twist: "You are both the subject and the scientist. Analyze why certain tasks are hard for you. This builds empathy.",
+                actions: [
+                    {
+                        title: "Grammar in Context",
+                        desc: "Don't memorize rules. Diagram sentences from your *Intensive Reading* texts. See grammar as the skeleton of meaning."
+                    },
+                    {
+                        title: "Input/Output Loop",
+                        desc: "Use **Shadowing**. Listen to *Intensive Listening* materials and repeat instantly to link processing to production."
+                    },
+                    {
+                        title: "Early Academic Identity",
+                        desc: "Start a 'Commonplace Book'. In *Critical Reading*, don't just answer questions—write counter-arguments."
+                    }
+                ],
+                bg: "bg-emerald-50",
+                border: "border-emerald-200"
+            },
+            p2: {
+                title: "Phase 2: The Pedagogical Analyst (Sem 4-6)",
+                goal: "Transition from 'knowing English' to 'knowing how to teach English'.",
+                twist: "Synthesize Abstract Theory (Linguistics) with Concrete Application (Teaching Methods).",
+                actions: [
+                    {
+                        title: "Linguistics-Pedagogy Link",
+                        desc: "Connect *Sociolinguistics* to student backgrounds. Connect *Morphology* to explaining prefixes to beginners."
+                    },
+                    {
+                        title: "The Simulation Lab",
+                        desc: "**Record yourself** in *Micro Teaching*. Watch with sound OFF (body language) and ON (instructional clarity)."
+                    },
+                    {
+                        title: "ESP & Specialization",
+                        desc: "Perform **Genre Analysis**. Analyze the structure of business emails vs. tourism brochures."
+                    }
+                ],
+                bg: "bg-amber-50",
+                border: "border-amber-200"
+            },
+            p3: {
+                title: "Phase 3: The Scholar-Practitioner (Sem 7-8)",
+                goal: "Professional mastery and contribution to the field (Thesis).",
+                twist: "You are no longer consuming knowledge; you are producing it.",
+                actions: [
+                    {
+                        title: "Research Synthesis",
+                        desc: "Start your thesis idea in Sem 5. Keep a Research Journal. Find gaps in senior theses."
+                    },
+                    {
+                        title: "Technology & Innovation",
+                        desc: "Critique apps using *SLA* knowledge. Do they actually help learning or are they just games?"
+                    },
+                    {
+                        title: "Translation as Mediation",
+                        desc: "Treat translation as 'Rewriting' (thought-for-thought). Use *Intercultural Comm* theories."
+                    }
+                ],
+                bg: "bg-indigo-50",
+                border: "border-indigo-200"
+            }
+        };
+
+        // --- INTERACTION LOGIC ---
+
+        // 1. Phase Switcher
+        function switchPhase(phaseId) {
+            // Update Tab Styles
+            ['p1', 'p2', 'p3'].forEach(id => {
+                const btn = document.getElementById(`tab-${id}`);
+                if (id === phaseId) {
+                    btn.className = "active-tab pb-2 text-sm font-medium transition-colors focus:outline-none";
+                } else {
+                    btn.className = "inactive-tab pb-2 text-sm font-medium transition-colors focus:outline-none";
+                }
+            });
+
+            // Update Content
+            const data = phaseData[phaseId];
+            const contentDiv = document.getElementById('phase-content');
             
-            <div className="bg-indigo-900 text-white p-6 rounded-xl shadow-lg">
-              <h4 className="font-bold mb-4 flex items-center gap-2"><Briefcase size={18}/> Professional Context</h4>
-              <p className="text-sm text-indigo-100 leading-relaxed">
-                Mastering this course is crucial not just for exams, but for your future capability as an educator. 
-                {selectedCourse.category.includes("Education") ? " These methods directly impact your classroom management." : " Deep linguistic knowledge separates a native speaker from a language teacher."}
-              </p>
-            </div>
+            let actionsHTML = '';
+            data.actions.forEach(action => {
+                actionsHTML += `
+                    <div class="bg-white p-4 rounded-lg border border-stone-100 shadow-sm">
+                        <h5 class="font-bold text-stone-800 mb-2">${action.title}</h5>
+                        <p class="text-sm text-stone-600">${action.desc}</p>
+                    </div>
+                `;
+            });
+
+            contentDiv.innerHTML = `
+                <div class="animate-fade-in-up">
+                    <div class="flex flex-col md:flex-row gap-6 mb-8">
+                        <div class="flex-1">
+                            <h4 class="text-xl font-bold text-stone-900 mb-2">${data.title}</h4>
+                            <p class="text-stone-700 font-medium mb-4">${data.goal}</p>
+                            <div class="bg-white p-4 rounded-lg border-l-4 ${data.border.replace('200', '500')} bg-opacity-50 italic text-stone-600 text-sm">
+                                <strong>Critical Twist:</strong> ${data.twist}
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="font-bold text-stone-400 uppercase tracking-wider text-xs mb-4">Strategic Actions</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        ${actionsHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 2. Chart Logic
+        function initCharts() {
+            // Data Processing
+            const categoryCounts = {};
+            const semesterLoad = {};
+
+            courses.forEach(c => {
+                // Category Sum
+                categoryCounts[c.cat] = (categoryCounts[c.cat] || 0) + c.sks;
+                // Semester Sum
+                semesterLoad[c.sem] = (semesterLoad[c.sem] || 0) + c.sks;
+            });
+
+            // Color Palette (Stone/Earth tones)
+            const catColors = ['#d6d3d1', '#a8a29e', '#78716c', '#b45309', '#d97706', '#f59e0b', '#fcd34d'];
             
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-               <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><FileText size={18}/> Exam Type</h4>
-               <p className="text-slate-600 text-sm">
-                 Mostly {selectedCourse.examType || "Written Tests (Ujian Tertulis)"}. 
-                 Prepare by practicing the specific strategies listed.
-               </p>
-            </div>
-          </div>
+            // Chart 1: Categories (Donut)
+            const ctxCat = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctxCat, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categoryCounts),
+                    datasets: [{
+                        data: Object.values(categoryCounts),
+                        backgroundColor: ['#e7e5e4', '#d6d3d1', '#f59e0b', '#78716c', '#a8a29e', '#fcd34d', '#b45309'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
 
-        </div>
-      </div>
-    );
-  };
+            // Chart 2: Semester Load (Bar)
+            const ctxSem = document.getElementById('semesterChart').getContext('2d');
+            new Chart(ctxSem, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(semesterLoad).map(k => `Sem ${k}`),
+                    datasets: [{
+                        label: 'SKS Load',
+                        data: Object.values(semesterLoad),
+                        backgroundColor: '#d6d3d1',
+                        hoverBackgroundColor: '#b45309',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
 
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col md:flex-row">
-      
-      {/* Mobile Header */}
-      <div className="md:hidden bg-white p-4 shadow-sm flex items-center justify-between sticky top-0 z-50">
-        <span className="font-bold text-blue-900 flex items-center gap-2"><GraduationCap size={20}/> UT English Ed</span>
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-600">
-          {isMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
+        // 3. Filter Logic
+        function filterCourses() {
+            const semVal = document.getElementById('semesterFilter').value;
+            const catVal = document.getElementById('categoryFilter').value;
+            const tbody = document.getElementById('courseTableBody');
+            
+            tbody.innerHTML = '';
 
-      {/* Sidebar Navigation */}
-      <aside className={`
-        fixed md:sticky top-0 h-screen w-72 bg-white border-r border-slate-200 z-40 transform transition-transform duration-300 ease-in-out
-        ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 overflow-y-auto
-      `}>
-        <div className="p-6 border-b border-slate-100">
-          <div className="flex items-center gap-2 font-bold text-xl text-blue-900 cursor-pointer" onClick={goHome}>
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-              UT
-            </div>
-            English Ed
-          </div>
-          <p className="text-xs text-slate-500 mt-2">Strategic Curriculum Handbook</p>
-        </div>
+            const filtered = courses.filter(c => {
+                const semMatch = semVal === 'all' || c.sem == semVal;
+                const catMatch = catVal === 'all' || c.cat === catVal;
+                return semMatch && catMatch;
+            });
 
-        <nav className="p-4 space-y-1">
-          <button 
-            onClick={goHome}
-            className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-3
-              ${view === 'home' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'}
-            `}
-          >
-            <Layout size={18} /> Overview
-          </button>
-          
-          <button 
-            onClick={goToolkit}
-            className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-3
-              ${view === 'toolkit' ? 'bg-amber-50 text-amber-700' : 'text-slate-600 hover:bg-slate-50'}
-            `}
-          >
-            <PenTool size={18} /> General Toolkit
-          </button>
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-stone-400">No courses match filters.</td></tr>';
+                return;
+            }
 
-          <div className="pt-6 pb-2 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Semesters</div>
-          
-          {semesters.map(sem => (
-            <button
-              key={sem.id}
-              onClick={() => goSemester(sem.id)}
-              className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors flex items-center justify-between group
-                ${selectedSemester?.id === sem.id && (view === 'semester' || view === 'course') ? 'bg-blue-50 text-blue-700 font-bold' : 'text-slate-600 hover:bg-slate-50'}
-              `}
-            >
-              Semester {sem.id}
-              {selectedSemester?.id === sem.id && (view === 'semester' || view === 'course') && <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>}
-            </button>
-          ))}
-        </nav>
-      </aside>
+            filtered.forEach(c => {
+                // Color code category pill
+                let badgeColor = "bg-stone-100 text-stone-600";
+                if(c.cat === 'Pedagogy') badgeColor = "bg-amber-100 text-amber-800";
+                if(c.cat === 'Linguistics') badgeColor = "bg-blue-50 text-blue-800";
+                if(c.cat === 'Skills') badgeColor = "bg-emerald-50 text-emerald-800";
 
-      {/* Main Content Area */}
-      <main className="flex-1 p-6 md:p-10 md:ml-0 overflow-x-hidden max-w-6xl mx-auto w-full">
-        {view === 'home' && renderHome()}
-        {view === 'toolkit' && renderToolkit()}
-        {view === 'semester' && renderSemester()}
-        {view === 'course' && renderCourse()}
-      </main>
+                const row = `
+                    <tr class="bg-white border-b hover:bg-stone-50 transition">
+                        <td class="px-6 py-4 font-medium">${c.sem}</td>
+                        <td class="px-6 py-4 text-xs font-mono text-stone-500">${c.code}</td>
+                        <td class="px-6 py-4 font-semibold text-stone-800">${c.name}</td>
+                        <td class="px-6 py-4">${c.sks}</td>
+                        <td class="px-6 py-4"><span class="${badgeColor} px-2 py-1 rounded text-xs font-bold">${c.cat}</span></td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
 
-    </div>
-  );
-}
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            switchPhase('p1'); // Load default phase
+            initCharts();      // Load charts
+            filterCourses();   // Load list
+        });
+
+    </script>
+</body>
+</html>
